@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'providers/temperature_provider.dart';
+import 'screens/login_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: "AIzaSyC7pSjKczyr4gyGp3Z7tw-r8wfiJ3AoJZg",
+      authDomain: "konversi-suhu-auth.firebaseapp.com",
+      projectId: "konversi-suhu-auth",
+      storageBucket: "konversi-suhu-auth.firebasestorage.app",
+      messagingSenderId: "122442000507",
+      appId: "1:122442000507:android:3ffa72a484115e23c55ade",
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -15,86 +28,12 @@ class MyApp extends StatelessWidget {
       create: (_) => TemperatureProvider(),
       child: MaterialApp(
         title: 'Konversi Suhu',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
         ),
-        home: const MyHomePage(title: 'Konversi Suhu'),
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final provider = context.read<TemperatureProvider>();
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            TextField(
-              controller: provider.inputController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Masukkan suhu dalam Celsius',
-              ),
-              keyboardType: const TextInputType.numberWithOptions(
-                signed: true,
-                decimal: true,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () => provider.konversiKeFahrenheit(),
-                  child: const Text('°F'),
-                ),
-                ElevatedButton(
-                  onPressed: () => provider.konversiKeKelvin(),
-                  child: const Text('K'),
-                ),
-                ElevatedButton(
-                  onPressed: () => provider.konversiKeReamur(),
-                  child: const Text('°R'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Consumer<TemperatureProvider>(
-              builder: (context, temp, child) {
-                return Text(
-                  temp.satuanHasil.isEmpty
-                      ? 'Hasil : -'
-                      : 'Hasil : ${temp.hasil} ${temp.satuanHasil}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15,
-                    background: Paint()
-                      ..strokeWidth = 25.0
-                      ..color = Colors.lightGreen
-                      ..style = PaintingStyle.stroke
-                      ..strokeJoin = StrokeJoin.round,
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
+        home: const LoginScreen(),
       ),
     );
   }
